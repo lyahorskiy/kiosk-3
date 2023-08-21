@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { CgMenu } from 'react-icons/cg'
+
 import Categories from '../components/No use/Catigories'
 import DropDownMenu from '../components/DropDownMenu'
 import NavItem from '../components/NavItem'
@@ -8,6 +9,7 @@ import Sort from '../components/Sort'
 import ItemBlock from '../components/itemBlocks/ItemBlock'
 import ItemBlockOneUnit from '../components/itemBlocks/ItemBlockOneUnit'
 import Skeleton from '../components/itemBlocks/Skeleton'
+import Pagination from '../components/Pagination'
 
 const Home = ({ searchValue }) => {
   const [items, setItems] = useState([])
@@ -21,19 +23,34 @@ const Home = ({ searchValue }) => {
 
   useEffect(() => {
     setIsLoading(true)
-    let fetchUrl = ''
 
+    // const search = searchValue ? `search=${searchValue}` : ''
+
+    let fetchUrl = ''
+    // if (categoryIndex > 0 && barItemIndex && barItemIndex.properties) {
+    //   fetchUrl = `https://648c44d48620b8bae7ec93c6.mockapi.io/items?${
+    //     searchValue ? `search=${searchValue}` : ''
+    //   }properties=${barItemIndex.properties}&sortBy=${
+    //     sortIndex.sortProperty
+    //   }&order=${sortIndex.sortProperty === 'price' ? 'asc' : 'desc'}`
+    // } else {
+    //   fetchUrl = `https://648c44d48620b8bae7ec93c6.mockapi.io/items?${
+    //     searchValue ? `search=${searchValue}` : ''
+    //   }${categoryIndex > 0 ? `category=${categoryIndex}` : ''}&sortBy=${
+    //     sortIndex.sortProperty
+    //   }&order=${sortIndex.sortProperty === 'price' ? 'asc' : 'desc'}`
+    // }
     if (categoryIndex > 0 && barItemIndex && barItemIndex.properties) {
       fetchUrl = `https://648c44d48620b8bae7ec93c6.mockapi.io/items?properties=${
         barItemIndex.properties
       }&sortBy=${sortIndex.sortProperty}&order=${
-        sortIndex.sortProperty === 'price' ? 'asc' : 'desc'
+        sortIndex.sortProperty === 'price' || 'title' ? 'asc' : 'desc'
       }`
     } else {
       fetchUrl = `https://648c44d48620b8bae7ec93c6.mockapi.io/items?${
         categoryIndex > 0 ? `category=${categoryIndex}` : ''
       }&sortBy=${sortIndex.sortProperty}&order=${
-        sortIndex.sortProperty === 'price' ? 'asc' : 'desc'
+        sortIndex.sortProperty === 'price' || 'title' ? 'asc' : 'desc'
       }`
     }
 
@@ -47,7 +64,7 @@ const Home = ({ searchValue }) => {
         console.error('Error fetching data:', error)
         setIsLoading(false)
       })
-  }, [categoryIndex, sortIndex, barItemIndex])
+  }, [categoryIndex, sortIndex, barItemIndex, searchValue])
 
   return (
     <>
@@ -65,7 +82,6 @@ const Home = ({ searchValue }) => {
           </NavItem>
         </NavBar>
       </div>
-
       <div className="content__items">
         {isLoading
           ? [...new Array(6)].map((_, index) => <Skeleton key={index} />)
@@ -82,6 +98,7 @@ const Home = ({ searchValue }) => {
                 )
               )}
       </div>
+      <Pagination />
     </>
   )
 }
