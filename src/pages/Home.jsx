@@ -20,6 +20,7 @@ const Home = ({ searchValue }) => {
     name: 'популярності',
     sortProperty: 'rating',
   })
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     setIsLoading(true)
@@ -41,13 +42,13 @@ const Home = ({ searchValue }) => {
     //   }&order=${sortIndex.sortProperty === 'price' ? 'asc' : 'desc'}`
     // }
     if (categoryIndex > 0 && barItemIndex && barItemIndex.properties) {
-      fetchUrl = `https://648c44d48620b8bae7ec93c6.mockapi.io/items?properties=${
+      fetchUrl = `https://648c44d48620b8bae7ec93c6.mockapi.io/items?page=${currentPage}&limit=12&properties=${
         barItemIndex.properties
       }&sortBy=${sortIndex.sortProperty}&order=${
         sortIndex.sortProperty === 'price' || 'title' ? 'asc' : 'desc'
       }`
     } else {
-      fetchUrl = `https://648c44d48620b8bae7ec93c6.mockapi.io/items?${
+      fetchUrl = `https://648c44d48620b8bae7ec93c6.mockapi.io/items?page=${currentPage}&limit=12&${
         categoryIndex > 0 ? `category=${categoryIndex}` : ''
       }&sortBy=${sortIndex.sortProperty}&order=${
         sortIndex.sortProperty === 'price' || 'title' ? 'asc' : 'desc'
@@ -64,7 +65,7 @@ const Home = ({ searchValue }) => {
         console.error('Error fetching data:', error)
         setIsLoading(false)
       })
-  }, [categoryIndex, sortIndex, barItemIndex, searchValue])
+  }, [categoryIndex, sortIndex, barItemIndex, searchValue, currentPage])
 
   return (
     <>
@@ -98,7 +99,11 @@ const Home = ({ searchValue }) => {
                 )
               )}
       </div>
-      <Pagination />
+      <Pagination
+        onChangePage={(number) => {
+          setCurrentPage(number)
+        }}
+      />
     </>
   )
 }
