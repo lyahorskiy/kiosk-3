@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { CgMenu } from 'react-icons/cg'
 
 import Categories from '../components/No use/Catigories'
@@ -10,8 +10,10 @@ import ItemBlock from '../components/itemBlocks/ItemBlock'
 import ItemBlockOneUnit from '../components/itemBlocks/ItemBlockOneUnit'
 import Skeleton from '../components/itemBlocks/Skeleton'
 import Pagination from '../components/Pagination'
+import { SearchContext } from '../App'
 
-const Home = ({ searchValue }) => {
+const Home = () => {
+  const { searchValue } = useContext(SearchContext)
   const [items, setItems] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [categoryIndex, setCategoryIndex] = useState(0)
