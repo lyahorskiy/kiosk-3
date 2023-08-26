@@ -12,17 +12,30 @@ import Skeleton from '../components/itemBlocks/Skeleton'
 import Pagination from '../components/Pagination'
 import { SearchContext } from '../App'
 
+import { useSelector, useDispatch } from 'react-redux'
+import { setCategoryId as setReduxCategoryId } from '../redux/slices/filterSlice'
+
 const Home = () => {
+  const categoryId = useSelector((state) => state.filter.categoryId)
+  const dispatch = useDispatch()
+
+  const handleSetCategoryId = () => {}
   const { searchValue } = useContext(SearchContext)
   const [items, setItems] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const [categoryIndex, setCategoryIndex] = useState(0)
+  // const [categoryIndex, setCategoryIndex] = useState(0)
   const [barItemIndex, setBarItemIndex] = useState({ properties: '' })
   const [sortIndex, setSortIndex] = useState({
     name: 'популярності',
     sortProperty: 'rating',
   })
   const [currentPage, setCurrentPage] = useState(1)
+
+  const onChangeCategory = (id) => {
+    dispatch(setReduxCategoryId(id)) // Используем переименованную функцию
+  }
+
+  console.log('categoryId', categoryId)
 
   useEffect(() => {
     setIsLoading(true)
@@ -43,7 +56,7 @@ const Home = () => {
     //     sortIndex.sortProperty
     //   }&order=${sortIndex.sortProperty === 'price' ? 'asc' : 'desc'}`
     // }
-    if (categoryIndex > 0 && barItemIndex && barItemIndex.properties) {
+    if (categoryId > 0 && barItemIndex && barItemIndex.properties) {
       fetchUrl = `https://648c44d48620b8bae7ec93c6.mockapi.io/items?page=${currentPage}&limit=12&properties=${
         barItemIndex.properties
       }&sortBy=${sortIndex.sortProperty}&order=${
@@ -51,7 +64,7 @@ const Home = () => {
       }`
     } else {
       fetchUrl = `https://648c44d48620b8bae7ec93c6.mockapi.io/items?page=${currentPage}&limit=12&${
-        categoryIndex > 0 ? `category=${categoryIndex}` : ''
+        categoryId > 0 ? `category=${categoryId}` : ''
       }&sortBy=${sortIndex.sortProperty}&order=${
         sortIndex.sortProperty === 'price' || 'title' ? 'asc' : 'desc'
       }`
@@ -67,7 +80,7 @@ const Home = () => {
         console.error('Error fetching data:', error)
         setIsLoading(false)
       })
-  }, [categoryIndex, sortIndex, barItemIndex, searchValue, currentPage])
+  }, [categoryId, sortIndex, barItemIndex, searchValue, currentPage])
 
   return (
     <>
@@ -76,8 +89,8 @@ const Home = () => {
         <Categories
           valueBar={barItemIndex}
           onClickBar={(i) => setBarItemIndex(i)}
-          value={categoryIndex}
-          onClickCategory={(index) => setCategoryIndex(index)}
+          value={categoryId}
+          onClickCategory={onChangeCategory}
         />
         <NavBar>
           <NavItem icon={<CgMenu />}>
